@@ -39,6 +39,11 @@
 
         function updateExplosionValue(newExplosion) {
             currentExplosion.textContent = newExplosion;
+
+            // إرسال الرقم إلى تطبيق Sketchware
+            if (window.Android) {
+                Android.sendDataToApp(newExplosion); // يرسل الرقم إلى التطبيق
+            }
         }
 
         // إنشاء اتصال WebSocket
