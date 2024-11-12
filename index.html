@@ -21,7 +21,8 @@
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            width: 300px;
+            width: 320px;
+            position: relative;
         }
         .explosion {
             font-size: 36px;
@@ -42,6 +43,11 @@
             margin-top: 10px;
             animation: spin 3s infinite linear;
         }
+        .statistics {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -54,11 +60,19 @@
         <div class="explosion" id="currentExplosion">جاري التحديث...</div>
         <div class="prediction" id="prediction">التوقع: ...</div>
         <div class="ai-icon"></div>
+
+        <!-- إحصائيات إضافية -->
+        <div class="statistics" id="statistics">
+            <p>أعلى انفجار: ...</p>
+            <p>أقل انفجار: ...</p>
+            <p>المتوسط: ...</p>
+        </div>
     </div>
 
     <script>
         const currentExplosion = document.getElementById('currentExplosion');
         const prediction = document.getElementById('prediction');
+        const statistics = document.getElementById('statistics');
 
         // البيانات التاريخية للانفجارات (أمثلة)
         let pastExplosions = [1.2, 1.5, 2.1, 3.0, 4.5, 6.0, 5.2]; 
@@ -68,6 +82,15 @@
             const average = pastExplosions.reduce((a, b) => a + b, 0) / pastExplosions.length;
             const predictedValue = (average + Math.random() * 1.5).toFixed(2); // إضافة تشويش عشوائي
             prediction.textContent = `التوقع: ${predictedValue}`;
+
+            // تحديث الإحصائيات
+            const highestExplosion = Math.max(...pastExplosions).toFixed(2);
+            const lowestExplosion = Math.min(...pastExplosions).toFixed(2);
+            statistics.innerHTML = `
+                <p>أعلى انفجار: ${highestExplosion}</p>
+                <p>أقل انفجار: ${lowestExplosion}</p>
+                <p>المتوسط: ${(average).toFixed(2)}</p>
+            `;
         }
 
         // إنشاء اتصال WebSocket
