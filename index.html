@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض آخر انفجار متغير فقط</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        .explosion {
+            font-size: 36px;
+            margin: 10px 0;
+            color: #F44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>عرض آخر انفجار متغير</h2>
+        <div class="explosion" id="currentExplosion">جاري التحديث...</div>
+    </div>
+
+    <script>
+        const currentExplosion = document.getElementById('currentExplosion');
+
+        function updateExplosionValue(newExplosion) {
+            currentExplosion.textContent = newExplosion;
+        }
+
+        // إنشاء اتصال WebSocket
+        const ws = new WebSocket('wss://eg1xbet.com/games-frame/sockets/crash?appGuid=00000000-0000-0000-0000-000000000000&whence=110&fcountry=66&ref=1&gr=0&lng=ar');
+
+        ws.onopen = () => {
+            console.log('تم الاتصال بنجاح');
+            ws.send('{"protocol":"json","version":1}\x1e');
+            ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data.slice(0, -1));
+                if (data.target === 'OnCrash') {
+                    const newExplosionValue = data.arguments[0].f; // استخراج قيمة الانفجار
+                    updateExplosionValue(newExplosionValue); // تحديث الرقم المعروض
+                }
+            } catch (error) {
+                console.error('خطأ في معالجة الرسالة:', error);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('تم إغلاق الاتصال');
+        };
+
+        ws.onerror = (error) => {
+            console.error('حدث خطأ في الاتصال:', error);
+        };
+    </script>
+</body>
+</html>
